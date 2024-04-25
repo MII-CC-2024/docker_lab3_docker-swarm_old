@@ -1,0 +1,51 @@
+version: "3.9"
+services:
+  web:
+    image: jluisalvarez/nodeapp:2023
+    build: .
+    depends_on:
+      - mongo
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == worker]
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+    ports:
+      - "80:8080"
+    networks:
+      - webnet
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+
+  mongo:
+    image: mongo
+    volumes:
+      - db-data:/data/db
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+
+volumes:
+  db-data:
+
+networks:
+  webnet:
+  

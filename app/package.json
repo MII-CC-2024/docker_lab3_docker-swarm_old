@@ -1,0 +1,25 @@
+{
+  "name": "node-webapp",
+  "version": "1.0.0",
+  "description": "Web App con Node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jlalvarez/node-webapp.git"
+  },
+  "author": "J.L. Álvarez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jlalvarez/node-webapp/issues"
+  },
+  "homepage": "https://github.com/jlalvarez/node-webapp#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "mongoose": "^5.7.5"
+  }
+}
