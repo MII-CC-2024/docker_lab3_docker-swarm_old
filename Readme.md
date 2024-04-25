@@ -4,7 +4,7 @@ En esta guía vamos a desplegar una Aplicación desarrollada con Nodejs que util
 NoSQL MongoDB en un clúster Swarm. Para monitorizar los contenedores usaremos la aplicación contenerizada visualizer.
 
 
-## Crear el clúster S
+## Crear el clúster Swarm
 https://docs.docker.com/engine/swarm/swarm-tutorial/
 
 Crear 3 máquinas virtuales, una de ellas la denominaremos: master y las otras dos: worker1 y worker2.
