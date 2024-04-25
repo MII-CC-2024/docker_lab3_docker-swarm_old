@@ -85,6 +85,7 @@ Para esta guía se ha creado una aplicación Node que permite guardar enlaces de
 El fichero principal index.js contiene:
 
 ```js
+
 var express = require('express');
 var app = express();
 
@@ -104,8 +105,10 @@ mongoose.connect(urlmongo, { useNewUrlParser: true }, function(err, dbmongo) {
 
 var linkSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
+    author: String,
     url: String,
-    description: String
+    description: String,
+    date: String
 });
 var Link = mongoose.model('Link', linkSchema);
 
@@ -145,11 +148,16 @@ var link_list = function (req, res) {
 router.get('/list',link_list);
 
 var link_create = function (req, res) {
+    let d = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
     var l = new Link(
         {
-           _id: new mongoose.Types.ObjectId(),
+            _id: new mongoose.Types.ObjectId(),
+            author: req.body.author,
             url: req.body.url,
-            description: req.body.description
+            description: req.body.description,
+            date: d.toLocaleDateString('es-ES', options)
         }
     );
 
@@ -182,6 +190,7 @@ var server = app.listen(8080, function () {
 
    console.log("Example app listening at http://%s:%s", host, port);
 });
+
 ```
 
 Los requisitos están indicados en el fichero package.json:
@@ -217,36 +226,92 @@ Los requisitos están indicados en el fichero package.json:
 Y, en la carpeta views, contamos con la vista views/index.ejs
 
 ```html
+
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Aplicación Enlaces de Interés</title>
-        <meta charset="UTF8" />
-    </head>
-   <body>
-       <h1>Enlaces de Interés</h1>
 
-      <ul class="quotes">
-        <% for(var i=0; i<links.length; i++) {%>
-            <li class="quote">
-                <a href='<%= links[i].url %>' ><%= links[i].description %></a> -
-                [<a href='/api/delete/<%=links[i]._id%>'>Delete</a>]
-            </li>
-        <% } %>
-      </ul>
-      
-       
-      <hr />
-      
-      <h3>Puedes crear nuevos enlaces desde este formulario</h3>
-      <form action = "/api/create" method = "POST">
-         URL del Link: <input type = "url" name = "url" size = "40">  <br>
-         _Description_: <input type = "text" name = "description">
-         <input type = "submit" value = "Submit">
-      </form>
-      
-   </body>
+<head>
+    <title>Bookmark: Interesting Links</title>
+    <meta charset="UTF8" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
+</head>
+
+<body>
+    <div class="mx-auto col-8">
+        <h1 class="m-b-60">Bookmark: Interesting Links</h1>
+
+        <div class="d-flex flex-wrap">
+            <% for(var i=0; i<links.length; i++) {%>
+                <div class="col-3 m-2 p-2 border d-flex flex-row">
+                    <div class="p-2">
+                        <img src="https://friconix.com/png/fi-xnluxx-anonymous-user-circle.png" alt="user" width="50"
+                            class="rounded-circle">
+                    </div>
+                    <div class="comment-text active w-100">
+                        <div class="text-muted small">
+                            <%= links[i].date %>
+                        </div>
+                        <div class="m-b-15">
+                            <%= links[i].description %>
+                        </div>
+                        <div class="comment-footer">
+
+                            <h6 class="font-medium">
+                                by <%= links[i].author %>.
+                            </h6>
+                            <div class="text-end">
+                                <a href='<%=links[i].url%>' target="_blank" class="btn btn-primary btn-sm">Visit</a>
+                                <a href='/api/delete/<%=links[i]._id%>' class="btn btn-danger btn-sm">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+                    <% if (links.length<=0) {%>
+                        <p>No links at the moment!! <br />
+                            Use below form to add new links</p>
+                        <% } %>
+
+        </div>
+
+
+        <hr />
+
+        <div class="mx-auto col-5">
+            <h3>Add New Link</h3>
+            <form action="/api/create" method="POST">
+                <!-- Usuario input -->
+                <div class="form-outline mb-2">
+                    <label class="form-label" for="author">User</label>
+                    <input type="text" id="author" name="author" class="form-control" required />
+                </div>
+
+                <div class="form-outline mb-2">
+                    <label class="form-label" for="url">Link</label>
+                    <input type="url" id="url" name="url" class="form-control" required />
+                </div>
+
+                <!-- Description input -->
+                <div class="form-outline mb-2">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea class="form-control" name="description" id="description" rows="4"></textarea>
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary btn-block mb-3">Save</button>
+            </form>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
+        </script>
+</body>
+
 </html>
+
 ```
 
 ### Dockerfile

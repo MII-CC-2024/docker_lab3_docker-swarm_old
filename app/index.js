@@ -60,7 +60,7 @@ var link_list = function (req, res) {
 router.get('/list',link_list);
 
 var link_create = function (req, res) {
-    d = new Date();
+    let d = new Date();
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
     var l = new Link(
