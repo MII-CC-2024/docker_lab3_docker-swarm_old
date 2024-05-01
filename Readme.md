@@ -362,8 +362,8 @@ $ docker push <username>/<dockerimage>
 El fichero doker-compose.yml tiene definidos 3 servicios, una red para conectarlos y un volumen para persistir los datos
 de MongoDB.
 
-```js
-version: "3.9"
+```yaml
+name: webapp
 services:
   web:
     image: <username>/<dockerimage>

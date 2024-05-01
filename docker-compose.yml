@@ -1,7 +1,8 @@
-version: "3.9"
+name: webapp
+
 services:
   web:
-    image: jluisalvarez/nodeapp:2023
+    image: jluisalvarez/nodeapp:2024
     build: .
     depends_on:
       - mongo
